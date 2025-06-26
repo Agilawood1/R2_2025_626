@@ -1,0 +1,20 @@
+T2DD0 001:919.610   SEGGER J-Link V7.22b Log File
+T2DD0 001:919.944   DLL Compiled: Jun 17 2021 17:22:49
+T2DD0 001:919.973   Logging started @ 2025-06-16 09:05
+T2DD0 001:920.000 - 1920.014ms
+T2DD0 001:920.048 JLINK_SetWarnOutHandler(...)
+T2DD0 001:920.077 - 0.042ms
+T2DD0 001:920.106 JLINK_OpenEx(...)
+T2DD0 001:923.279   
+  ***** Error: 
+T2DD0 001:923.366   Cannot connect to J-Link.
+T2DD0 001:958.016 - 37.945ms returns "Cannot connect to J-Link."
+T2DD0 001:958.532 
+  ***** 
+T2DD0 001:958.579 API Error: API JLINK_GetHardwareVersion function called before JLINKARM_Open()
+T2DD0 001:958.603 JLINK_GetHardwareVersion()
+T2DD0 001:987.330 - 28.761ms
+T2DD0 002:989.857 JLINK_Close()
+T2DD0 002:990.086 - 0.247ms
+T2DD0 002:990.299   
+T2DD0 002:990.313   Closed
