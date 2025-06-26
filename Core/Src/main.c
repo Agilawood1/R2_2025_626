@@ -624,10 +624,10 @@ int main(void)
   while (1)
   {
 		//测试运球，下面是30000，上面是-3000
-		// if(eee_flag==1){
-		// 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_SET);
-		// }
-		// else HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET);
+		 if(eee_flag==1){
+		 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_SET);
+		 }
+		 else HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET);
 		
 		// if(lasdjfkl_flag == 1) Logic_Yunqiu_test();
 		//测试电机
@@ -701,6 +701,7 @@ int main(void)
 
     motor_vesc_set_rpm(0, VESC_rpm_up);
     motor_vesc_set_rpm(1, VESC_rpm_up);
+		// 0626 23：32 临时修改一下，目的是为了方便投篮的测试
     motor_vesc_set_rpm(2, VESC_rpm_down);
 
     /***************    发送串口消息    *******************/
