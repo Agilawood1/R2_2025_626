@@ -114,8 +114,8 @@ extern float muzzle_velo_seconds;
 extern float muzzle_velo;
 extern int measurement_done;
 
-extern float VESC_rpm;
-
+extern float VESC_rpm_up;
+extern float VESC_rpm_down;
 
 extern uint32_t General_RuntimeCounter;
 extern float hori_distance_from_basket;

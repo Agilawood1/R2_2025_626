@@ -57,43 +57,198 @@ int Logic_GunLoad(int delta_ms)
  * @brief 动作序列
  * @name 运球
  * @param delta_ms：每次调用本函数的间隔
- * @param dribble_checker：红外是否检测到篮球在面前
  * @details 一系列动作
  */
 float dribble_gain = 0.5f;
 int Logic_Dribble(int delta_ms)
 {
-   
+   static int dribble_state = 0;
+   switch(dribble_state)
+   {
+        case 0:
+        {
+            //设置延时器
+            Logic_delayer_set(400, DRRIBLE_DELAYER_ID);//状态运行切换是400ms
+            //放下气缸，防止炸膛
+            HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET);
+            //确保摩擦轮不在转
+            VESC_rpm_up = 0;
+            VESC_rpm_down = 0;            
+            dribble_state++;
+            break;
+        }
+        case 1:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(DRRIBLE_DELAYER_ID, dribble_state)
+            break;            
+        }
+        case 2:
+        {
+            //调整炮筒角度
+            ShooterDM_position = 0.5;//弧度制
+            dribble_state++;
+            break;
+        }
+        case 3:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(DRRIBLE_DELAYER_ID, dribble_state)
+            break;            
+        }
+        case 4:
+        {
+            //预热摩擦轮
+            VESC_rpm_up = -3000;
+            VESC_rpm_down = 35000;
+            //增大时间间隔
+            Logic_delayer_set(700, DRRIBLE_DELAYER_ID);
+            dribble_state++;
+            break;
+        }
+        case 5:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(DRRIBLE_DELAYER_ID, dribble_state)
+            break;            
+        }
+        case 6:
+        {
+            //打开气缸，投射
+            HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_SET);
+            Logic_delayer_set(500, DRRIBLE_DELAYER_ID);      
+            dribble_state++;
+            break;
+        }
+        case 7:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(DRRIBLE_DELAYER_ID, dribble_state)
+            break;            
+        }
+        case 8:
+        {
+            //超强吸力，回收球
+            VESC_rpm_up = -3000;
+            VESC_rpm_down = -3000;
+            //关闭气缸，防止卡弹，否则会变得不幸
+            HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET); 
+            Logic_delayer_set(500, DRRIBLE_DELAYER_ID);
+//						ShooterDM_position = 0;
+            dribble_state++;
+            break;
+        }
+        case 9:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(DRRIBLE_DELAYER_ID, dribble_state)
+            break;            
+        }
+				case 10:
+        {
+            //放平炮筒
+						ShooterDM_position = 0;
+					  Logic_delayer_set(2500, DRRIBLE_DELAYER_ID);
+            dribble_state++;
+            break;
+        }
+        case 11:
+        {
+            DELAYER(DRRIBLE_DELAYER_ID, dribble_state)
+            break;            
+        }
+        default:
+        break;
+   }
+    if(dribble_state > 11)
+    {
+        //回到初始状态
+        VESC_rpm_up = 0;
+        VESC_rpm_down = 0;
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET); 
+
+        dribble_state = 0;
+        return 1;
+    }
     return 0;
 }
 
 
 /**
  * @brief 动作序列
- * @name 测试性发射
+ * @name 发射
  * @param delta_ms：每次调用本函数的间隔
  * @details 如果机器人的状态不是“TestFire”，本操作是无效的
  */
-int Logic_TestFire(int delta_ms)
+int Logic_Fire(int delta_ms)
 {
-    static int testfire_state = 0;
-    switch (testfire_state)
+    static int fire_state = 0;
+    switch (fire_state)
     {
         case 0:
-        {
-            
+        {           
             // 设置延时器
-            Logic_delayer_set(400, TESTFIRE_DELAYER_ID);
-            testfire_state++;
+            Logic_delayer_set(400, FIRE_DELAYER_ID);
+            //关闭气缸
+            HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET); 
+            //摩擦轮转速清零
+            VESC_rpm_up = 0;
+            VESC_rpm_down = 0;
+            //设置发射角度
+            ShooterDM_position = 0.5; // 弧度制
+            fire_state++;
             break;
         }
         case 1:
         {
             // 运行延时器，直到进入下一个状态
-            DELAYER(TESTFIRE_DELAYER_ID, testfire_state)
+            DELAYER(FIRE_DELAYER_ID, fire_state)
             break;
         }
+        case 2:
+        {           
+            // 设置发射速度
+            VESC_rpm_up = 20000;
+            VESC_rpm_down = 20000;
+            // 设置延时器
+            Logic_delayer_set(1000, FIRE_DELAYER_ID);
+            fire_state++;
+            break;
+        }
+        case 3:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(FIRE_DELAYER_ID, fire_state)
+            break;
+        }
+        case 4:
+        {           
+            // fire!
+            HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_SET); 
+            fire_state++;
+            break;
+        }
+        case 5:
+        {
+            // 运行延时器，直到进入下一个状态
+            DELAYER(FIRE_DELAYER_ID, fire_state)
+            break;
+        }
+        default:
+            break;        
     }
+    if(fire_state > 5)
+    {
+        // 回到初始状态
+        VESC_rpm_up = 0;
+        VESC_rpm_down = 0;
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET); 
+
+        fire_state = 0;
+        return 1;   // 发射完成
+    }
+    
+        return 0;   // 发射未完成
 }
 
 
@@ -295,7 +450,7 @@ void Logic_StateRunner()
         /************************   状态：运球    *******************************/
         case ROBOSTATE_DRIBBLING:
         {
-            drbl_flag = 1;
+            drbl_flag = 1;//用于灯带的flag，可以先不管
             dribble_ok_flag = Logic_Dribble(STATE_MANAGER_PERIOD_MS);
             break;
         }
@@ -327,7 +482,7 @@ void Logic_StateTransmitor()
         /************************   状态：初始化    *******************************/
         case ROBOSTATE_INITING:
         {
-            if (1)      // 如果夹爪初始化成功了，进入下一个状态
+            if (1)      // 还没写最上层的限制条件，上电后就会进入IDLE
             {
                 RobotState = ROBOSTATE_IDLE;
             }

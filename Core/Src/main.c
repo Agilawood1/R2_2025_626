@@ -624,12 +624,12 @@ int main(void)
   while (1)
   {
 		//测试运球，下面是30000，上面是-3000
-		if(eee_flag==1){
-			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_SET);
-		}
-		else HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET);
+		// if(eee_flag==1){
+		// 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_SET);
+		// }
+		// else HAL_GPIO_WritePin(GPIOF, GPIO_PIN_1, GPIO_PIN_RESET);
 		
-		if(lasdjfkl_flag == 1) Logic_Yunqiu_test();
+		// if(lasdjfkl_flag == 1) Logic_Yunqiu_test();
 		//测试电机
 		// MotorVESC_SetMotorRPM(&motor_vesc_1, motor_vesc_1.motor_rpm_set);
 		// MotorVESC_SetMotorRPM(&motor_vesc_2, motor_vesc_2.motor_rpm_set);
@@ -797,7 +797,7 @@ void CAN_Interrupt_Enable(CAN_HandleTypeDef *can_n)
 // 安全锁 置位 时，才可向底盘发送消息
 float	steer_angle_offset_0 = 0;
 float	steer_angle_offset_1	= 0;
-float	steer_angle_offset_2 = 3;//舵轮零位补偿，该值大于0时，轮顺时针转
+float	steer_angle_offset_2 = 0;//舵轮零位补偿，该值大于0时，轮顺时针转
 void sendMsgToChassis()
 {
   if (safe_locks)

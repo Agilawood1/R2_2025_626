@@ -452,7 +452,7 @@ void TIM6_DAC_IRQHandler(void)
   // 这是一个 5ms 的中断
 
   // 安全锁管理
-//  safe_guard_timer -= 5;
+  safe_guard_timer -= 5;
   if (safe_guard_timer > 0)
   {
     safe_locks = 1;

@@ -272,8 +272,8 @@ void rmt_estimate_js_input()
         if (My_joystick.Keys[i])
         {
             input_actions[i] = 1;
+                can_response_flag = 1;//不确该不该置1
         }
     }
-    
     // 拨杆
 }
